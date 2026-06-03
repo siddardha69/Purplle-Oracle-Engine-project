@@ -1,0 +1,46 @@
+# ==============================================================================
+# STAGE 1: Dependency builder
+# ==============================================================================
+FROM python:3.11-slim as builder
+
+WORKDIR /build
+
+# Install compilation system dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    libpq-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy dependency configs
+COPY requirements.txt .
+
+# Compile Python packages into virtual wheels to prevent build leaks
+RUN pip install --no-cache-dir --user -r requirements.txt
+
+# ==============================================================================
+# STAGE 2: Running target
+# ==============================================================================
+FROM python:3.11-slim as runner
+
+WORKDIR /workspace
+
+# Install minimal runtime shared libraries (libpq for Postgres connectivity)
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libpq5 \
+    && rm -rf /var/lib/apt/lists/*
+
+# Extract pre-compiled Python binaries from builder stage
+COPY --from=builder /root/.local /root/.local
+ENV PATH=/root/.local/bin:$PATH
+
+# Copy codebase
+COPY . .
+
+# Expose FastAPI default port
+EXPOSE 8000
+
+# Enforce logging streams immediately
+ENV PYTHONUNBUFFERED=1
+
+# Production launching script
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]

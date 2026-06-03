@@ -1,0 +1,25 @@
+{
+  "last_updated": "2026-06-02T08:39:46.500999Z",
+  "videos": [
+    "CAM 1.mp4",
+    "CAM 2.mp4",
+    "CAM 3.mp4",
+    "CAM 4.mp4",
+    "CAM 5.mp4"
+  ],
+  "layouts": [
+    "store_layout.json"
+  ],
+  "pos_sources": [
+    "pos_transactions.csv"
+  ],
+  "validation": {
+    "status": "PASSED",
+    "last_validated": "2026-06-02T08:39:46.501024Z",
+    "errors": []
+  },
+  "processing": {
+    "status": "READY",
+    "last_run": null
+  }
+}

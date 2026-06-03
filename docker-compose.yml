@@ -1,0 +1,137 @@
+version: '3.8'
+
+services:
+  # ============================================================================
+  # POSTGRESQL DATABASE SERVICE
+  # ============================================================================
+  postgres:
+    image: postgres:15-alpine
+    container_name: store_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: store_intelligence
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - api-net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d store_intelligence"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # ============================================================================
+  # REDIS CACHE & TELEMETRY BROKER SERVICE
+  # ============================================================================
+  redis:
+    image: redis:7-alpine
+    container_name: store_redis
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - api-net
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # ============================================================================
+  # FASTAPI WEB API SERVICE
+  # ============================================================================
+  api:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.api
+    container_name: store_api
+    restart: always
+    environment:
+      - ENVIRONMENT=production
+      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/store_intelligence
+      - REDIS_URL=redis://redis:6379/0
+      - LOG_LEVEL=INFO
+      - API_HOST=0.0.0.0
+      - API_PORT=8000
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./logs:/workspace/logs
+      - ./data:/workspace/data
+    networks:
+      - api-net
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/v1/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  # ============================================================================
+  # STREAMLIT USER INTERFACE / DASHBOARD SERVICE
+  # ============================================================================
+  dashboard:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.dashboard
+    container_name: store_dashboard
+    restart: always
+    environment:
+      - API_HOST=api
+      - API_PORT=8000
+      - REDIS_URL=redis://redis:6379/0
+    ports:
+      - "8501:8501"
+    networks:
+      - api-net
+    depends_on:
+      api:
+        condition: service_healthy
+
+  # ============================================================================
+  # EDGE COMPUTER VISION STREAM PROCESSOR SERVICE (Optional/Continuous Ingestion)
+  # ============================================================================
+  pipeline:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.pipeline
+    container_name: store_pipeline
+    restart: on-failure
+    environment:
+      - ENVIRONMENT=production
+      - API_HOST=api
+      - API_PORT=8000
+      - CAMERA_ID=CAM-MAIN-01
+      - STORE_ID=STORE-DLF-01
+      - VIDEO_SOURCE=/workspace/data/sample_cctv.mp4
+      - LAYOUT_PATH=/workspace/data/store_layout.json
+    volumes:
+      - ./data:/workspace/data
+    networks:
+      - api-net
+    depends_on:
+      api:
+        condition: service_healthy
+    # Scale down by default; developers can boot it manually via 'docker compose up pipeline'
+    deploy:
+      replicas: 0
+
+# Network definitions for security boundaries isolation
+networks:
+  api-net:
+    driver: bridge
+
+# Mount volume specs to persist database clusters across rebuilds
+volumes:
+  postgres_data:
+  redis_data:

@@ -1,0 +1,101 @@
+{
+  "overall_status": "PASSED",
+  "timestamp": "2026-06-02T08:39:46.482724Z",
+  "validation_summary": {
+    "videos": {
+      "total_scanned": 5,
+      "valid": 5,
+      "details": [
+        {
+          "filename": "CAM 1.mp4",
+          "path": "data\\videos\\CAM 1.mp4",
+          "valid": true,
+          "fps": 29.97,
+          "width": 1920,
+          "height": 1080,
+          "duration_s": 139.9,
+          "frame_count": 4193,
+          "codec": "h264",
+          "errors": []
+        },
+        {
+          "filename": "CAM 2.mp4",
+          "path": "data\\videos\\CAM 2.mp4",
+          "valid": true,
+          "fps": 29.97,
+          "width": 1920,
+          "height": 1080,
+          "duration_s": 125.9,
+          "frame_count": 3774,
+          "codec": "h264",
+          "errors": []
+        },
+        {
+          "filename": "CAM 3.mp4",
+          "path": "data\\videos\\CAM 3.mp4",
+          "valid": true,
+          "fps": 29.97,
+          "width": 1920,
+          "height": 1080,
+          "duration_s": 148.0,
+          "frame_count": 4436,
+          "codec": "h264",
+          "errors": []
+        },
+        {
+          "filename": "CAM 4.mp4",
+          "path": "data\\videos\\CAM 4.mp4",
+          "valid": true,
+          "fps": 24.98,
+          "width": 1920,
+          "height": 1080,
+          "duration_s": 146.0,
+          "frame_count": 3647,
+          "codec": "hevc",
+          "errors": []
+        },
+        {
+          "filename": "CAM 5.mp4",
+          "path": "data\\videos\\CAM 5.mp4",
+          "valid": true,
+          "fps": 24.98,
+          "width": 1920,
+          "height": 1080,
+          "duration_s": 138.7,
+          "frame_count": 3465,
+          "codec": "hevc",
+          "errors": []
+        }
+      ]
+    },
+    "layouts": {
+      "total_scanned": 1,
+      "valid": 1,
+      "details": [
+        {
+          "filename": "store_layout.json",
+          "path": "data\\store_layout.json",
+          "valid": true,
+          "zones_count": 5,
+          "errors": []
+        }
+      ]
+    },
+    "pos": {
+      "total_scanned": 1,
+      "valid": 1,
+      "details": [
+        {
+          "filename": "pos_transactions.csv",
+          "path": "data\\pos_transactions.csv",
+          "valid": true,
+          "total_rows": 5,
+          "missing_values": 0,
+          "duplicate_txn_ids": 0,
+          "errors": []
+        }
+      ]
+    }
+  },
+  "errors": []
+}
