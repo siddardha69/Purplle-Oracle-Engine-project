@@ -314,6 +314,26 @@ with cctv_left:
             )
             return
             
+        # Check if pre-rendered demo video is available
+        demo_path = os.path.join(workspace_root, "data", "videos", "demo_processed.mp4")
+        if os.path.exists(demo_path):
+            try:
+                import base64
+                with open(demo_path, "rb") as video_file:
+                    video_bytes = video_file.read()
+                b64_video = base64.b64encode(video_bytes).decode("utf-8")
+                video_html = f'''
+                    <video autoplay loop muted playsinline style="width:100%; border-radius:14px; border:1px solid rgba(255,255,255,0.07);">
+                        <source src="data:video/mp4;base64,{b64_video}" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                '''
+                st.markdown(video_html, unsafe_allow_html=True)
+                return
+            except Exception as err:
+                logger.error(f"Failed to load demo video: {err}")
+
+        # Fallback to live stream
         st.markdown(
             f'<img src="{_mjpeg_url}" style="width:100%; border-radius:14px; border:1px solid rgba(255,255,255,0.07);"/>',
             unsafe_allow_html=True

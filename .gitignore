@@ -119,6 +119,7 @@ data/**/*.avi
 data/*.csv
 !data/pos_transactions.csv
 !data/store_layout.json
+!data/videos/demo_processed.mp4
 local_logs/
 logs/
 *.db
