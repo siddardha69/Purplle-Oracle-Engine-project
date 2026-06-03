@@ -132,3 +132,4 @@ test_h264.mp4
 test_avc1.mp4
 test_vp8.webm
 test_vp9.webm
+*.pdf
