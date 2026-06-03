@@ -126,3 +126,9 @@ logs/
 *.db-journal
 *.pt
 *.onnx
+*.zip
+openh264-1.8.0-win64.dll
+test_h264.mp4
+test_avc1.mp4
+test_vp8.webm
+test_vp9.webm
