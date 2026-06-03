@@ -35,7 +35,7 @@ def generate_demo():
     print(f"Configuring output video writer at: {output_path}")
     
     # We resize to 640x480 for the dashboard
-    fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+    fourcc = cv2.VideoWriter_fourcc(*'avc1')
     out = cv2.VideoWriter(output_path, fourcc, 20.0, (640, 480))
     
     frame_count = 0
