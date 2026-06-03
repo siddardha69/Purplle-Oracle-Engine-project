@@ -3,8 +3,7 @@ title: Purplle Store Intelligence
 emoji: 🔮
 colorFrom: indigo
 colorTo: purple
-sdk: streamlit
-app_file: dashboard/app.py
+sdk: docker
 pinned: false
 ---
 
